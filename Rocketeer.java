@@ -27,12 +27,12 @@ public class Rocketeer extends JComponent implements ActionListener {
 
     boolean up;
 
-    double boost = 1;
+    double boost = 0.5;
 
     double acceleration;
-    double gravityForce = 0;
+    double gravityForce = 0.25;
 
-    int maxAcceletation = 15;
+    int maxAcceletation = 10;
 
     int playerSize = 50;
 
@@ -66,22 +66,22 @@ public class Rocketeer extends JComponent implements ActionListener {
                 (int) playerX + playerSize / 2 };
         int[] yPoints = { (int) playerY + playerSize, (int) playerY + 0, (int) playerY + playerSize,
                 (int) playerY + playerSize / 2 };
-        //g.drawPolygon(xPoints, yPoints, 4);
+        g.drawPolygon(xPoints, yPoints, 4);
 
-        double aX = (-25 * Math.cos(rotation)) - (-25 * Math.sin(rotation));
-        double bX = (0 * Math.cos(rotation)) - (25 * Math.sin(rotation));
-        double cX = (25 * Math.cos(rotation)) - (-25 * Math.sin(rotation));
-        double dX = (0 * Math.cos(rotation)) - (0 * Math.sin(rotation));
+        // double aX = (-25 * Math.cos(rotation)) - (-25 * Math.sin(rotation));
+        // double bX = (0 * Math.cos(rotation)) - (25 * Math.sin(rotation));
+        // double cX = (25 * Math.cos(rotation)) - (-25 * Math.sin(rotation));
+        // double dX = (0 * Math.cos(rotation)) - (0 * Math.sin(rotation));
 
-        int[] xPointsRotated = { (int) aX + 50, (int) bX + 50, (int) cX + 50, (int) dX + 50 };
+        // int[] xPointsRotated = { (int) aX + 50, (int) bX + 50, (int) cX + 50, (int) dX + 50 };
 
-        double aY = (-25 * Math.sin(rotation)) + (-25 * Math.cos(rotation));
-        double bY = (0 * Math.sin(rotation)) + (25 * Math.cos(rotation));
-        double cY = (25 * Math.sin(rotation)) + (-25 * Math.cos(rotation));
-        double dY = (0 * Math.sin(rotation)) + (0 * Math.cos(rotation));
+        // double aY = (-25 * Math.sin(rotation)) + (-25 * Math.cos(rotation));
+        // double bY = (0 * Math.sin(rotation)) + (25 * Math.cos(rotation));
+        // double cY = (25 * Math.sin(rotation)) + (-25 * Math.cos(rotation));
+        // double dY = (0 * Math.sin(rotation)) + (0 * Math.cos(rotation));
 
-        int[] yPointsRotated = { (int) aY + 50, (int) bY + 50, (int) cY + 50, (int) dY + 50 };
-        g.drawPolygon(xPointsRotated, yPointsRotated, 4);
+        // int[] yPointsRotated = { (int) aY + 50, (int) bY + 50, (int) cY + 50, (int) dY + 50 };
+        // g.drawPolygon(xPointsRotated, yPointsRotated, 4);
     }
 
     public void update() {
