@@ -23,20 +23,26 @@ public class Rocketeer extends JComponent implements ActionListener {
     //
 
     double playerX = 0;
-    double playerY = 0;
+    double playerY = screenHeight / 2;
 
     boolean up;
+    boolean right;
+    boolean left;
 
-    double boost = 0.5;
+    double yBoost = 0.1;
+    double xBoost = 0.1;
+    double horBoost = 1;
 
-    double acceleration;
+    double xAcceleration;
+    double yAcceleration;
     double gravityForce = 0.25;
+    //double gravityForce = 0;
 
     int maxAcceletation = 10;
 
     int playerSize = 50;
 
-    double rotation = -1 * (90 * (Math.PI / 180));
+    double rotation = 0;
 
     //
 
@@ -58,55 +64,88 @@ public class Rocketeer extends JComponent implements ActionListener {
 
     @Override
     public void paintComponent(Graphics g) {
+        // paint background
         g.setColor(Color.black);
         g.fillRect(0, 0, screenWidth, screenHeight);
-
+        // paint player
         g.setColor(Color.gray);
-        int[] xPoints = { (int) playerX + 0, (int) playerX + playerSize / 2, (int) playerX + playerSize,
-                (int) playerX + playerSize / 2 };
-        int[] yPoints = { (int) playerY + playerSize, (int) playerY + 0, (int) playerY + playerSize,
-                (int) playerY + playerSize / 2 };
-        g.drawPolygon(xPoints, yPoints, 4);
+        g.drawPolygon(triginometry(toRadian(rotation), true, playerX, playerY), triginometry(toRadian(rotation), false, playerX, playerY), 4);
+    }
 
-        // double aX = (-25 * Math.cos(rotation)) - (-25 * Math.sin(rotation));
-        // double bX = (0 * Math.cos(rotation)) - (25 * Math.sin(rotation));
-        // double cX = (25 * Math.cos(rotation)) - (-25 * Math.sin(rotation));
-        // double dX = (0 * Math.cos(rotation)) - (0 * Math.sin(rotation));
+    public double toRadian(Double angle){
+        return ((180 + angle) *(Math.PI / 180));
+    }
 
-        // int[] xPointsRotated = { (int) aX + 50, (int) bX + 50, (int) cX + 50, (int) dX + 50 };
+    public int[] triginometry(Double rotation, boolean type, double oX, double oY){
+        int[] polygon = new int[4];
+        double aX = playerSize / 2 + oX + (-25 * Math.cos(rotation)) - (0 * Math.sin(rotation));
+        double bX = playerSize / 2 + oX + (0 * Math.cos(rotation)) - (50 * Math.sin(rotation));
+        double cX = playerSize / 2 + oX + (25 * Math.cos(rotation)) - (0 * Math.sin(rotation));
+        double dX = playerSize / 2 + oX + (0 * Math.cos(rotation)) - (25 * Math.sin(rotation));
 
-        // double aY = (-25 * Math.sin(rotation)) + (-25 * Math.cos(rotation));
-        // double bY = (0 * Math.sin(rotation)) + (25 * Math.cos(rotation));
-        // double cY = (25 * Math.sin(rotation)) + (-25 * Math.cos(rotation));
-        // double dY = (0 * Math.sin(rotation)) + (0 * Math.cos(rotation));
+        double aY = playerSize + oY + (-25 * Math.sin(rotation)) + (0 * Math.cos(rotation));
+        double bY = playerSize + oY + (0 * Math.sin(rotation)) + (50 * Math.cos(rotation));
+        double cY = playerSize + oY + (25 * Math.sin(rotation)) + (0 * Math.cos(rotation));
+        double dY = playerSize + oY + (0 * Math.sin(rotation)) + (25 * Math.cos(rotation));
 
-        // int[] yPointsRotated = { (int) aY + 50, (int) bY + 50, (int) cY + 50, (int) dY + 50 };
-        // g.drawPolygon(xPointsRotated, yPointsRotated, 4);
+        if (type){
+            polygon[0] = (int)aX;
+            polygon[1] = (int)bX;
+            polygon[2] = (int)cX;
+            polygon[3] = (int)dX;
+        } else {
+            polygon[0] = (int)aY;
+            polygon[1] = (int)bY;
+            polygon[2] = (int)cY;
+            polygon[3] = (int)dY;
+        }
+        return polygon;
     }
 
     public void update() {
-        // gravity
-        if (playerY + acceleration + playerSize + gravityForce < screenHeight) {
-            if (acceleration + gravityForce < maxAcceletation && acceleration - acceleration > maxAcceletation * -1) {
-                acceleration = acceleration + gravityForce;
-            }
-        }
-
         // boost
         if (up) {
-            if (acceleration - boost > maxAcceletation * -1) {
-                acceleration = acceleration - boost;
+            if (yAcceleration - yBoost > maxAcceletation * -1 && xAcceleration - xBoost > maxAcceletation * -1) {
+                yBoost = 0.5 * Math.cos(toRadian(rotation));
+                xBoost = 0.5 * Math.sin(toRadian(rotation));
+                yAcceleration = yAcceleration + yBoost;
+                xAcceleration = xAcceleration - xBoost;
+            }
+        }
+        if (right){
+            rotation = rotation + horBoost;
+        }
+        if (left){
+            rotation = rotation - horBoost;
+        }
+        // apply acceleration
+        if (playerY + yAcceleration < screenHeight && playerY + yAcceleration >= (playerSize * -1) - playerSize / 2) {
+            playerX = playerX + xAcceleration;
+            playerY = playerY + yAcceleration;
+            
+        }
+        // gravity
+        if (playerY + yAcceleration + playerSize + gravityForce < screenHeight) {
+            if (yAcceleration + gravityForce < maxAcceletation && yAcceleration - yAcceleration > maxAcceletation * -1) {
+                yAcceleration = yAcceleration + gravityForce;
             }
         }
 
-        // apply acceleration
-        if (playerY + acceleration < screenHeight && playerY + acceleration >= (playerSize * -1) - playerSize / 2) {
-            playerY = playerY + acceleration;
-        }
+        xAcceleration = xAcceleration - 0.025 * xAcceleration;
+        yAcceleration = yAcceleration - 0.025 * yAcceleration;
 
         // check if player is beyond bounds
         if (playerY + playerSize > screenHeight) {
             playerY = screenHeight - playerSize;
+        }
+        if (playerX + playerSize > screenWidth){
+            playerX = screenWidth - playerSize;
+        }
+        if (playerY < 0){
+            playerY = 0;
+        }
+        if (playerX < 0){
+            playerX = 0;
         }
     }
 
@@ -128,6 +167,12 @@ public class Rocketeer extends JComponent implements ActionListener {
             if (key == KeyEvent.VK_W) {
                 up = true;
             }
+            if (key == KeyEvent.VK_D){
+                right = true;
+            }
+            if (key == KeyEvent.VK_A){
+                left = true;
+            }
         }
 
         // if a key has been released
@@ -136,6 +181,12 @@ public class Rocketeer extends JComponent implements ActionListener {
             int key = e.getKeyCode();
             if (key == KeyEvent.VK_W) {
                 up = false;
+            }
+            if (key == KeyEvent.VK_D){
+                right = false;
+            }
+            if (key == KeyEvent.VK_A){
+                left = false;
             }
         }
     }
