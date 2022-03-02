@@ -10,6 +10,14 @@ import java.awt.event.KeyEvent;
 import javax.swing.Timer;
 
 public class Rocketeer extends JComponent implements ActionListener {
+
+    /*
+     * TOOD LIST
+     * / - Collision with ground and walls
+     * / - Highscore, just store single int in text file with name seperated with .
+     * / - Difficulty???
+     */
+
     static final int screenWidth = 960;
     static final int screenHeight = 720;
 
@@ -49,9 +57,11 @@ public class Rocketeer extends JComponent implements ActionListener {
 
     int points = 0;
 
-    int timer = 10 * fps;
+    int timer = 20 * fps;
 
     int goal = 2;
+    int goals[] = { 1, 3, 5, 7, 9 };
+    int stage;
 
     boolean run = true;
 
@@ -95,6 +105,10 @@ public class Rocketeer extends JComponent implements ActionListener {
         g.setColor(Color.green);
         g.drawLine(goal * sW, screenHeight, goal * sW, 0);
         g.drawLine((goal + 1) * sW, screenHeight, (goal + 1) * sW, 0);
+
+        if (!run) {
+            g.drawString("You got " + points + " points in 20 seconds!.", screenWidth / 2, screenHeight / 2);
+        }
     }
 
     public double toRadian(Double angle) {
@@ -129,15 +143,16 @@ public class Rocketeer extends JComponent implements ActionListener {
 
     public void update() {
         if (run) {
-
             int roundedX = (int) (10 * (playerX / screenWidth));
-            // System.out.println(roundedX);
+            int realTime = timer / 120;
+            stage = realTime / 5;
+            goal = goals[stage];
             if (roundedX == goal) {
                 points++;
             }
             // System.out.println(points);
 
-            if (timer > 0) {
+            if (timer >= 0) {
                 timer--;
             } else {
                 run = false;
