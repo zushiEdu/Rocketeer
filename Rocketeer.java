@@ -50,6 +50,7 @@ public class Rocketeer extends JComponent implements ActionListener {
     // 0.25 reg grav force
     double gravityForce = 0.25;
     String em = "";
+    String hs = "";
     // double gravityForce = 0;
 
     int maxAcceletation = 15;
@@ -113,6 +114,7 @@ public class Rocketeer extends JComponent implements ActionListener {
         if (!run) {
             g.drawString("You got " + points + " points in 20 seconds!. " + em, (screenWidth / 2) - 150,
                     screenHeight / 2);
+            g.drawString("Highscore is " + hs, (screenWidth / 2) - 150, (screenHeight / 2) + 50);
         }
     }
 
@@ -168,9 +170,11 @@ public class Rocketeer extends JComponent implements ActionListener {
                 // score is higher than highscore
                 savePoints(one);
                 em = "New Highscore";
+                hs = a;
             } else {
                 // nothing
                 em = "";
+                hs = a;
             }
             reader.read();
         } catch (Exception e) {
