@@ -7,6 +7,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+
 import javax.swing.Timer;
 
 public class Rocketeer extends JComponent implements ActionListener {
@@ -45,6 +49,7 @@ public class Rocketeer extends JComponent implements ActionListener {
     double yAcceleration;
     // 0.25 reg grav force
     double gravityForce = 0.25;
+    String em = "";
     // double gravityForce = 0;
 
     int maxAcceletation = 15;
@@ -99,15 +104,15 @@ public class Rocketeer extends JComponent implements ActionListener {
         // paint ground
         g.drawPolygon(groundX, groundY, 12);
         // paint metrics
-        g.drawString("" + points, 100, 100);
-        g.drawString("" + timer / 120, 100, 200);
+        g.drawString("Points: " + points, 100, 100);
+        g.drawString("Time Left: " + timer / 120, 100, 200);
         // paint goal
         g.setColor(Color.green);
         g.drawLine(goal * sW, screenHeight, goal * sW, 0);
         g.drawLine((goal + 1) * sW, screenHeight, (goal + 1) * sW, 0);
-
         if (!run) {
-            g.drawString("You got " + points + " points in 20 seconds!.", screenWidth / 2, screenHeight / 2);
+            g.drawString("You got " + points + " points in 20 seconds!. " + em, (screenWidth / 2) - 150,
+                    screenHeight / 2);
         }
     }
 
@@ -141,6 +146,38 @@ public class Rocketeer extends JComponent implements ActionListener {
         return polygon;
     }
 
+    public void savePoints(int numToSave) {
+        try {
+            FileWriter writer = new FileWriter("highscore.txt");
+            writer.write("" + numToSave);
+            writer.close();
+        } catch (Exception e) {
+
+        }
+    }
+
+    public void comparePoints(int one) {
+        try {
+            FileReader reader = new FileReader("highscore.txt");
+            File file = new File("highscore.txt");
+            char[] c = new char[(int) file.length()];
+            reader.read(c);
+            String a = new String(c);
+            int fileAmount = Integer.parseInt(a);
+            if (one > fileAmount) {
+                // score is higher than highscore
+                savePoints(one);
+                em = "New Highscore";
+            } else {
+                // nothing
+                em = "";
+            }
+            reader.read();
+        } catch (Exception e) {
+
+        }
+    }
+
     public void update() {
         if (run) {
             int roundedX = (int) (10 * (playerX / screenWidth));
@@ -156,6 +193,7 @@ public class Rocketeer extends JComponent implements ActionListener {
                 timer--;
             } else {
                 run = false;
+                comparePoints(points);
             }
 
             // boost
