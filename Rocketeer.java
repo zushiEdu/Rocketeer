@@ -237,15 +237,19 @@ public class Rocketeer extends JComponent implements ActionListener {
             // check if player is beyond bounds
             if (playerY + playerSize > screenHeight) {
                 playerY = screenHeight - playerSize;
+                run = false;
             }
             if (playerX + playerSize > screenWidth) {
                 playerX = screenWidth - playerSize;
+                run = false;
             }
             if (playerY < 0) {
                 playerY = 0;
+                run = false;
             }
             if (playerX < 0) {
                 playerX = 0;
+                run = false;
             }
         }
     }
