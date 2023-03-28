@@ -148,6 +148,18 @@ public class Rocketeer extends JComponent implements ActionListener {
         return polygon;
     }
 
+    public void reset() {
+        setup();
+        playerX = screenWidth / 2;
+        playerY = screenHeight / 2;
+        xAcceleration = 0;
+        yAcceleration = 0;
+        rotation = 0;
+        points = 0;
+        timer = 20 * fps;
+        run = true;
+    }
+
     public void savePoints(int numToSave) {
         try {
             FileWriter writer = new FileWriter("highscore.txt");
@@ -220,7 +232,6 @@ public class Rocketeer extends JComponent implements ActionListener {
                     && playerY + yAcceleration >= (playerSize * -1) - playerSize / 2) {
                 playerX = playerX + xAcceleration;
                 playerY = playerY + yAcceleration;
-
             }
             // gravity
             if (playerY + yAcceleration + playerSize + gravityForce < screenHeight) {
@@ -277,6 +288,9 @@ public class Rocketeer extends JComponent implements ActionListener {
             }
             if (key == KeyEvent.VK_A) {
                 left = true;
+            }
+            if (key == KeyEvent.VK_R) {
+                reset();
             }
         }
 
